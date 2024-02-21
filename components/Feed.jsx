@@ -36,7 +36,7 @@ const Feed = () => {
   useEffect(() => {
     fetchPosts();
   }, []);
-
+  console.log(allPosts);
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
     return allPosts.filter(
