@@ -1,44 +1,29 @@
-"use client";
-
-import { useState, useEffect } from "react";
-
-import PromptCard from "./PromptCard";
-
-const PromptCardList = ({ data, handleTagClick }) => {
-  return (
-    <div className='mt-16 prompt_layout'>
-      {data.map((post) => (
-        <PromptCard
-          key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
-      ))}
-    </div>
-  );
-};
+import React, { useState, useEffect } from "react";
+import PromptCardList from "./PromptCardList";
 
 const Feed = () => {
   const [allPosts, setAllPosts] = useState([]);
-
-  // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
 
   const fetchPosts = async () => { 
-    const response = await fetch("/api/prompt", {cache: 'no-store'});
+    const response = await fetch("/api/prompt", { cache: 'no-store' });
     const data = await response.json();
-
     setAllPosts(data);
   };
 
   useEffect(() => {
     fetchPosts();
   }, []);
-  console.log(allPosts);
+
+  useEffect(() => {
+    const interval = setInterval(fetchPosts, 5000); // Fetch posts every 5 seconds
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, []); // Empty dependency array so it only runs once on mount
+
   const filterPrompts = (searchtext) => {
-    const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
+    const regex = new RegExp(searchtext, "i");
     return allPosts.filter(
       (item) =>
         regex.test(item.creator.username) ||
@@ -50,8 +35,6 @@ const Feed = () => {
   const handleSearchChange = (e) => {
     clearTimeout(searchTimeout);
     setSearchText(e.target.value);
-
-    // debounce method
     setSearchTimeout(
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
@@ -62,25 +45,22 @@ const Feed = () => {
 
   const handleTagClick = (tagName) => {
     setSearchText(tagName);
-
     const searchResult = filterPrompts(tagName);
     setSearchedResults(searchResult);
   };
 
   return (
-    <section className='feed'>
-      <form className='relative w-full flex-center'>
+    <section className="feed">
+      <form className="relative w-full flex-center">
         <input
-          type='text'
-          placeholder='Search for a tag or a username'
+          type="text"
+          placeholder="Search for a tag or a username"
           value={searchText}
           onChange={handleSearchChange}
           required
-          className='search_input peer'
+          className="search_input peer"
         />
       </form>
-
-      {/* All Prompts */}
       {searchText ? (
         <PromptCardList
           data={searchedResults}
