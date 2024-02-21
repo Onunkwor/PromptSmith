@@ -7,16 +7,6 @@ export const POST = async (req) => {
     await connectToDB();
     const newPrompt = new Prompt({ creator: userId, prompt, tag });
     await newPrompt.save();
-    
-    // Generate a timestamp
-    const timestamp = Date.now();
-    
-    // Append timestamp as a query parameter to the response
-    const response = {
-      prompt: newPrompt,
-      timestamp: timestamp
-    };
-    
     return new Response(JSON.stringify(response), { status: 201 });
   } catch (error) {
     return new Response("Failed to create prompt", { status: 500 });
