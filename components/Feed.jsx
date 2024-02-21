@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import PromptCard from "./PromptCard";
-import Image from "next/image";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
-    <div className="mt-16 prompt_layout">
+    <div className='mt-16 prompt_layout'>
       {data.map((post) => (
         <PromptCard
           key={post._id}
@@ -25,14 +25,13 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-  
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt", { cache: 'no-store' });
+
+  const fetchPosts = async () => { 
+    const response = await fetch("/api/prompt", {cache: 'no-store'});
     const data = await response.json();
-  
+
     setAllPosts(data);
   };
-  
 
   useEffect(() => {
     fetchPosts();
@@ -67,31 +66,20 @@ const Feed = () => {
     const searchResult = filterPrompts(tagName);
     setSearchedResults(searchResult);
   };
-  const handleFilter = (e) => {
-    e.preventDefault();
-    setSearchText('');
-    setSearchedResults([]);
-    setSearchTimeout(null);
-  };
-  
+
   return (
-    <section className="feed">
-      <form className="relative w-full flex-center">
+    <section className='feed'>
+      <form className='relative w-full flex-center'>
         <input
-          type="text"
-          placeholder="Search for a tag or a username"
+          type='text'
+          placeholder='Search for a tag or a username'
           value={searchText}
           onChange={handleSearchChange}
           required
-          className="search_input"
+          className='search_input peer'
         />
       </form>
-      <div className="w-full flex justify-end">
-        <p className="filter_btn w-24" onClick={handleFilter}>
-          <Image src="/assets/icons/filter.svg" width={12} height={12} />
-          All Prompt
-        </p>
-      </div>
+
       {/* All Prompts */}
       {searchText ? (
         <PromptCardList
